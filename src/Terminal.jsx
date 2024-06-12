@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './Terminal.css'; // Ensure your styles are imported
+import './Terminal.css';
 
 function Terminal() {
     const [input, setInput] = useState('');
     const [history, setHistory] = useState([
-        { command: '', output: 'Welcome to the Terminal! Type "help" for available commands.' } // Initial welcome message
+        { command: '', output: 'Welcome to the Terminal! Type "help" for available commands.' }
     ]);
+    const [result, setResult] = useState('');
     const endOfOutput = useRef(null);
 
     const handleInput = event => {
@@ -14,56 +15,56 @@ function Terminal() {
 
     const handleSubmit = event => {
         event.preventDefault();
-        const output = processCommand(input);
-        setHistory(history => [...history, { command: `$ ${input}`, output }]);
-        setInput('');
+        processCommand(input);
     };
 
+    useEffect(() => {
+        if (result) {
+            setHistory(history => [...history, { command: `$ ${input}`, output: result }]);
+            setInput('');
+        }
+    }, [result]);
+
     const processCommand = async (command) => {
-        if (command.toLowerCase() === 'help') {
-            return 'Available commands: help, clear, calculate <expression>';
-        }
-        if (command.toLowerCase() === 'clear') {
-            setHistory([]);
-            return null;
-        }
-        if (command.startsWith('calculate ')) {
-            const expression = command.substring(10);
-            try {
+        const trimmedCommand = command.trim().toLowerCase();
+        const commandParts = trimmedCommand.split(' ');
+        const action = commandParts[0];  // 'calculate', 'help', or 'clear'
+
+        console.log('Command action:', action);  // Debugging log
+
+        switch (action) {
+            case 'help':
+                setHistory(history => [...history, { command: `$ ${command}`, output: 'Available commands: help, clear, calculate' }]);
+                setInput('');
+                break;
+            case 'clear':
+                setHistory([]);
+                break;
+            case 'calculate':
+                // Capture everything after 'calculate' keyword as the calculation string
+                const calcString = commandParts.slice(1).join(' ');  // Re-join the parts excluding the first keyword
+                console.log('Calculation string:', calcString);  // Debugging log
+
                 const response = await fetch('/api/calculatorFunction', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ calcString: expression })
+                    body: JSON.stringify({ calcString })
                 });
                 const data = await response.json();
-                if (response.ok) {
-                    return `Result: ${data.result}`;
-                } else {
-                    return `Error: ${data.error}`;
-                }
-            } catch (error) {
-                return 'Error: Could not connect to the API';
-            }
+                setResult(data.result || data.error);
+                break;
+            default:
+                setHistory(history => [...history, { command: `$ ${command}`, output: `Command '${command}' not recognized` }]);
+                setInput('');
+                break;
         }
-        return `Command '${command}' not recognized`;
     };
-    // const processCommand = (command) => {
-    //     // Dummy function to simulate command processing
-    //     switch (command.toLowerCase()) {
-    //         case 'help':
-    //             return 'Available commands: help, clear, ...';
-    //         case 'clear':
-    //             setHistory([]);
-    //             return null;
-    //         default:
-    //             return `Command '${command}' not recognized`;
-    //     }
-    // };
+
 
     useEffect(() => {
-        endOfOutput.current?.scrollIntoView({ behavior: 'instant' });
+        endOfOutput.current?.scrollIntoView({ behavior: 'smooth' });
     }, [history]);
 
     return (
