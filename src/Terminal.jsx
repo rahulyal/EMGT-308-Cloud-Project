@@ -19,18 +19,48 @@ function Terminal() {
         setInput('');
     };
 
-    const processCommand = (command) => {
-        // Dummy function to simulate command processing
-        switch (command.toLowerCase()) {
-            case 'help':
-                return 'Available commands: help, clear, ...';
-            case 'clear':
-                setHistory([]);
-                return null;
-            default:
-                return `Command '${command}' not recognized`;
+    const processCommand = async (command) => {
+        if (command.toLowerCase() === 'help') {
+            return 'Available commands: help, clear, calculate <expression>';
         }
+        if (command.toLowerCase() === 'clear') {
+            setHistory([]);
+            return null;
+        }
+        if (command.startsWith('calculate ')) {
+            const expression = command.substring(10);
+            try {
+                const response = await fetch('/api/calculatorFunction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ calcString: expression })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    return `Result: ${data.result}`;
+                } else {
+                    return `Error: ${data.error}`;
+                }
+            } catch (error) {
+                return 'Error: Could not connect to the API';
+            }
+        }
+        return `Command '${command}' not recognized`;
     };
+    // const processCommand = (command) => {
+    //     // Dummy function to simulate command processing
+    //     switch (command.toLowerCase()) {
+    //         case 'help':
+    //             return 'Available commands: help, clear, ...';
+    //         case 'clear':
+    //             setHistory([]);
+    //             return null;
+    //         default:
+    //             return `Command '${command}' not recognized`;
+    //     }
+    // };
 
     useEffect(() => {
         endOfOutput.current?.scrollIntoView({ behavior: 'instant' });
