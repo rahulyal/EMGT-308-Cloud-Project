@@ -1,0 +1,35 @@
+.terminalContainer {
+    width: 800px;
+    /* Adjust width as needed */
+    height: 300px;
+    /* Adjust height as needed */
+    overflow: auto;
+    /* Makes the container scrollable */
+    background-color: black;
+}
+
+.terminal {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: white;
+}
+
+.terminal td {
+    padding: 5px;
+    /* Adjust padding as needed */
+    border: none;
+    /* Removes any default table borders */
+}
+
+.terminal input {
+    width: 90%;
+    /* Adjust based on your layout needs */
+    background-color: black;
+    color: white;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+}

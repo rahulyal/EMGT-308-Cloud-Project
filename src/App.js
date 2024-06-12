@@ -1,8 +1,13 @@
 import React from 'react';
+import Terminal from './Terminal';
 
 function App() {
-  const value = 'World';
-  return <div>Hello {value}</div>;
+  return (
+    <div>
+      <Terminal />
+      <p>testing ...</p>
+    </div>
+  );
 }
 
 export default App;
