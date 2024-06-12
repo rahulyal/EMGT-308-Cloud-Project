@@ -20,7 +20,9 @@ function App() {
   return (
     <div>
       <Terminal />
-      <p>Testing...</p>
+      <h1>Calculator - Web CLI tool</h1>
+      <p>Commands: <b>calculate</b> <i>calcstring</i>, calcstring = '1+1*23/46'</p>
+      <p>Example: <b>calculate</b> <i>3+4-23*9+888</i></p>
       <p>{data}</p>
     </div>
   );

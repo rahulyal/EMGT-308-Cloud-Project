@@ -38,6 +38,7 @@ function Terminal() {
                 setInput('');
                 break;
             case 'clear':
+                setInput('');
                 setHistory([]);
                 break;
             case 'calculate':
@@ -65,7 +66,7 @@ function Terminal() {
 
     useEffect(() => {
         endOfOutput.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [history]);
+    }, [history, input]);
 
     return (
         <div className="terminalContainer">
